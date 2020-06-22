@@ -1,0 +1,9 @@
+Диалоги: //*[@id=\"ng-app\"]/body/div[1]/div[2]/div/div[1]/div[2]/div/div[1]/ul/li[1]
+Кнопка меню: /html/body/div[1]/div[1]/div/div/div[1]/div/a/div
+Кнопка Settings в меню: /html/body/div[1]/div[1]/div/div/div[1]/div/ul/li[3]/a
+Кнопка ActiveSessions в меню: /html/body/div[5]/div[2]/div/div/div[3]/div/div[4]/div[3]/a
+Актиные сессии: /html/body/div[6]/div[2]/div/div/div[2]/div/div/div[1]/ul
+
+Крестик у активных сессий: /html/body/div[6]/div[2]/div/div/div[1]/div[1]/div/a
+Крести у профиля:		  /html/body/div[5]/div[2]/div/div/div[1]/div[1]/div[1]/a[1]
+
