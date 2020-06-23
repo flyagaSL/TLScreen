@@ -49,3 +49,34 @@ driver.find_element_by_xpath(
     "/html/body/div[6]/div[2]/div/div/div[1]/div[1]/div/a").click()
 driver.find_element_by_xpath(
     "/html/body/div[5]/div[2]/div/div/div[1]/div[1]/div[1]/a[1]").click()
+
+slider = driver.find_element_by_xpath(
+    "/html/body/div[1]/div[2]/div/div[1]/div[2]/div/div[2]/div")
+
+height_dialogs = driver.find_element_by_xpath(
+    "/html/body/div[1]/div[2]/div/div[1]/div[2]/div/div[1]").size["height"]
+
+print(height_dialogs)
+
+slider_y_position = slider.location["y"]
+
+img = ImageGrab.grab()
+img.save(SCREEN_FOLDER + "dialogs0.jpg")
+
+count = 1
+while True:
+    print(height_dialogs * count)
+    driver.execute_script(
+        "document.getElementsByClassName(\"im_dialogs_scrollable_wrap  nano-content\")[0].scroll({}, {})".format(0, height_dialogs * count * 0.2))  # 30% от высоты диалога
+
+    print("old: {} new: {}".format(slider_y_position, slider.location["y"]))
+
+    if slider_y_position == slider.location["y"]:
+        break
+
+    slider_y_position = slider.location["y"]
+    time.sleep(0.5)
+    img = ImageGrab.grab()
+    img.save(SCREEN_FOLDER + "dialogs{}.jpg".format(count))
+    count = count + 1
+print("Выполнение программы успешно завершено!!!")
