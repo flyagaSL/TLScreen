@@ -63,6 +63,7 @@ slider_y_position = slider.location["y"]
 img = ImageGrab.grab()
 img.save(SCREEN_FOLDER + "dialogs0.jpg")
 
+
 count = 1
 while True:
     print(height_dialogs * count)
@@ -79,4 +80,34 @@ while True:
     img = ImageGrab.grab()
     img.save(SCREEN_FOLDER + "dialogs{}.jpg".format(count))
     count = count + 1
+
+
+driver.execute_script(
+    "document.getElementsByClassName(\"im_dialogs_scrollable_wrap  nano-content\")[0].scroll({}, {})".format(0, 0))
+
+dialog_number = 0
+while True:
+    dialog_number = dialog_number + 1
+    print("Выполненяется диалог: {}".format(dialog_number))
+    badge_dialog = driver.find_element_by_xpath(
+        "/html/body/div[1]/div[2]/div/div[1]/div[2]/div/div[1]/ul/li[{}]/a/div[1]/span".format(dialog_number))
+
+    print(badge_dialog.text)
+
+    if badge_dialog.text != "":
+        continue
+
+    dialog = driver.find_element_by_xpath(
+        "/html/body/div[1]/div[2]/div/div[1]/div[2]/div/div[1]/ul/li[{}]".format(dialog_number))
+    dialog.click()
+    dialog_header = wait.until(EC.presence_of_element_located(
+        (By.XPATH, "/html/body/div[1]/div[1]/div/div/div[2]/div/div[2]/a")))
+    dialog_header.click()
+
+    img = ImageGrab.grab()
+    img.save(SCREEN_FOLDER + "profile{}.jpg".format(dialog_number))
+
+    driver.find_element_by_class_name('md_modal_action_close').click()
+    time.sleep(0.5)
+
 print("Выполнение программы успешно завершено!!!")

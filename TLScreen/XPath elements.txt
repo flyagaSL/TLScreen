@@ -7,12 +7,14 @@
 Крестик у активных сессий: /html/body/div[6]/div[2]/div/div/div[1]/div[1]/div/a
 Крести у профиля:		  /html/body/div[5]/div[2]/div/div/div[1]/div[1]/div[1]/a[1]
 
-Диалоги:  im_dialogs_scrollable_wrap  nano-content
-Диалоги: /html/body/div[1]/div[2]/div/div[1]/div[2]/div/div[1]
-Диалог 1: /html/body/div[1]/div[2]/div/div[1]/div[2]/div/div[1]/ul/li[1]/a
-Даилог 2: /html/body/div[1]/div[2]/div/div[1]/div[2]/div/div[1]/ul/li[2]/a
-Слайдер по диалогам: /html/body/div[1]/div[2]/div/div[1]/div[2]/div/div[2]/div
+Диалог 1: /html/body/div[1]/div[2]/div/div[1]/div[2]/div/div[1]/ul/li[1]
+  Непрочитанные сообщения: /html/body/div[1]/div[2]/div/div[1]/div[2]/div/div[1]/ul/li[1]/a/div[1]/span
+Диалог 2: /html/body/div[1]/div[2]/div/div[1]/div[2]/div/div[1]/ul/li[2]
+  Непрочитанные сообщения: /html/body/div[1]/div[2]/div/div[1]/div[2]/div/div[1]/ul/li[2]/a/div[1]/span
+Диалог 5: /html/body/div[1]/div[2]/div/div[1]/div[2]/div/div[1]/ul/li[5]
+  Непрочитанные сообщения:/html/body/div[1]/div[2]/div/div[1]/div[2]/div/div[1]/ul/li[5]/a/div[1]/span
 
-
-
-
+Шапка диалога: /html/body/div[1]/div[1]/div/div/div[2]/div/div[2]/a
+Закрытие информации о пользователе: /html/body/div[6]/div[2]/div/div/div[1]/div[1]/div[1]/a[1]
+/html/body/div[5]/div[2]/div/div/div[1]/div[1]/div[1]/a
+/html/body/div[5]/div[2]/div/div/div[1]/div[1]/div[1]/a[1]
