@@ -1,4 +1,4 @@
-Диалоги: //*[@id=\"ng-app\"]/body/div[1]/div[2]/div/div[1]/div[2]/div/div[1]/ul/li[1]
+Диалоги: /html/body/div[1]/div[2]/div/div[1]/div[2]/div/div[1]/ul/li[1]
 Кнопка меню: /html/body/div[1]/div[1]/div/div/div[1]/div/a/div
 Кнопка Settings в меню: /html/body/div[1]/div[1]/div/div/div[1]/div/ul/li[3]/a
 Кнопка ActiveSessions в меню: /html/body/div[5]/div[2]/div/div/div[3]/div/div[4]/div[3]/a
@@ -15,6 +15,18 @@
   Непрочитанные сообщения:/html/body/div[1]/div[2]/div/div[1]/div[2]/div/div[1]/ul/li[5]/a/div[1]/span
 
 Шапка диалога: /html/body/div[1]/div[1]/div/div/div[2]/div/div[2]/a
-Закрытие информации о пользователе: /html/body/div[6]/div[2]/div/div/div[1]/div[1]/div[1]/a[1]
-/html/body/div[5]/div[2]/div/div/div[1]/div[1]/div[1]/a
-/html/body/div[5]/div[2]/div/div/div[1]/div[1]/div[1]/a[1]
+Закрытие информации о пользователе: /html/body/div[5]/div[2]/div/div/div[1]/div[1]/div[1]/a
+
+Слайдер диалога: /html/body/div[1]/div[2]/div/div[2]/div[3]/div/div[2]/div[2]/div
+Диалог со скролом: im_history_scrollable_wrap
+Весь прогрузившийся диалог: im_history_scrollable
+
+Дир, содержащий все прогруженные сообщения: /html/body/div[1]/div[2]/div/div[2]/div[3]/div/div[2]/div[1]/div/div[1]/div[2]/div[3]
+  Одно сообщение: div.im_history_messages_peer:nth-child({Номер диалога}}) > div.im_history_message_wrap
+
+Индикатор загрузки старых сообщений: /html/body/div[1]/div[2]/div/div[2]/div[3]/div/div[2]/div[1]/div/div[1]/div[2]/div[1]
+
+Все прогруженные сообщения выделенного диалога: div.im_history_messages_peer:not(.ng-hide) > div.im_history_message_wrap
+
+Диалог: /html/body/div[1]/div[2]/div/div[2]/div[3]/div/div[2]
+
