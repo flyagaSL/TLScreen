@@ -5,12 +5,20 @@ from PIL import ImageGrab
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import NoSuchElementException
 
-SCREEN_FOLDER = "Screenshots/"
+DOWNLOAD_FOLDER = "D:\\Programs\\TLScreen\\TLScreen\\Telegram\\"
+
 MAX_MESSAGES = 1000
 
 url = "https://web.telegram.org/#/im"
 fp = webdriver.FirefoxProfile(os.environ["MProfile"])
+fp.set_preference("browser.download.folderList", 2)
+fp.set_preference("browser.download.manager.showWhenStarting", False)
+fp.set_preference("browser.download.dir",
+                  "{}TmpDownload".format(DOWNLOAD_FOLDER))
+fp.set_preference("browser.helperApps.alwaysAsk.force", False)
+
 
 driver = webdriver.Firefox(fp)
 
@@ -18,7 +26,7 @@ wait = WebDriverWait(driver, 20)
 
 driver.get(url)
 
-dialogs = wait.until(EC.presence_of_element_located(
+chats = wait.until(EC.presence_of_element_located(
     (By.XPATH, "/html/body/div[1]/div[2]/div/div[1]/div[2]/div/div[1]/ul/li[1]")))
 
 button_menu = wait.until(EC.presence_of_element_located(
@@ -34,9 +42,11 @@ button_settings.click()
 button_active_sessions = wait.until(EC.presence_of_element_located(
     (By.XPATH, "/html/body/div[5]/div[2]/div/div/div[3]/div/div[4]/div[3]/a")))
 
+if not os.path.isdir(DOWNLOAD_FOLDER):
+    os.mkdir(DOWNLOAD_FOLDER)
 
 img = ImageGrab.grab()
-img.save(SCREEN_FOLDER + 'profile.jpg')
+img.save(DOWNLOAD_FOLDER + 'profile.jpg')
 
 button_active_sessions.click()
 
@@ -44,7 +54,7 @@ active_sessions = wait.until(EC.presence_of_element_located(
     (By.XPATH, "/html/body/div[6]/div[2]/div/div/div[2]/div/div/div[1]/ul")))
 
 img = ImageGrab.grab()
-img.save(SCREEN_FOLDER + 'activeSessions.jpg')
+img.save(DOWNLOAD_FOLDER + 'active_essions.jpg')
 
 driver.find_element_by_xpath(
     "/html/body/div[6]/div[2]/div/div/div[1]/div[1]/div/a").click()
@@ -54,23 +64,22 @@ driver.find_element_by_xpath(
 slider = driver.find_element_by_xpath(
     "/html/body/div[1]/div[2]/div/div[1]/div[2]/div/div[2]/div")
 
-height_dialogs = driver.find_element_by_xpath(
+height_chats = driver.find_element_by_xpath(
     "/html/body/div[1]/div[2]/div/div[1]/div[2]/div/div[1]").size["height"]
-
-print(height_dialogs)
 
 slider_y_position = slider.location["y"]
 
 img = ImageGrab.grab()
-img.save(SCREEN_FOLDER + "dialogs0.jpg")
+img.save(DOWNLOAD_FOLDER + "chats_0.jpg")
 
 
 count = 1
 
+'''
 while True:
-    print(height_dialogs * count)
+    print(height_chats * count)
     driver.execute_script(
-        "document.getElementsByClassName(\"im_dialogs_scrollable_wrap  nano-content\")[0].scroll({}, {})".format(0, height_dialogs * count * 0.9))  # 70% от высоты диалога
+        "document.getElementsByClassName(\"im_dialogs_scrollable_wrap  nano-content\")[0].scroll({}, {})".format(0, height_chats * count * 0.9))  # 70% от высоты диалога
 
     print("old: {} new: {}".format(slider_y_position, slider.location["y"]))
 
@@ -80,46 +89,59 @@ while True:
     slider_y_position = slider.location["y"]
     time.sleep(0.5)
     img = ImageGrab.grab()
-    img.save(SCREEN_FOLDER + "dialogs{}.jpg".format(count))
+    img.save(DOWNLOAD_FOLDER + "chats{}.jpg".format(count))
     count = count + 1
+'''
 
 
 driver.execute_script(
     "document.getElementsByClassName(\"im_dialogs_scrollable_wrap  nano-content\")[0].scroll({}, {})".format(0, 0))
 
-dialog_number = 0
+chat_number = 0
+
+
 while True:
-    dialog_number = dialog_number + 1
-    print("Выполненяется диалог: {}".format(dialog_number))
-    badge_dialog = driver.find_element_by_xpath(
-        "/html/body/div[1]/div[2]/div/div[1]/div[2]/div/div[1]/ul/li[{}]/a/div[1]/span".format(dialog_number))
+    chat_number = chat_number + 1
+    print("Выполненяется диалог: {}".format(chat_number))
 
-    print(badge_dialog.text)
+    badge_chat = driver.find_element_by_xpath(
+        "/html/body/div[1]/div[2]/div/div[1]/div[2]/div/div[1]/ul/li[{}]/a/div[1]/span".format(chat_number))
 
-    if badge_dialog.text != "":
+    if badge_chat.text != "":
         continue
 
-    dialog = driver.find_element_by_xpath(
-        "/html/body/div[1]/div[2]/div/div[1]/div[2]/div/div[1]/ul/li[{}]".format(dialog_number))
-    dialog.click()
-    dialog_header = wait.until(EC.presence_of_element_located(
+    chat = driver.find_element_by_xpath(
+        "/html/body/div[1]/div[2]/div/div[1]/div[2]/div/div[1]/ul/li[{}]".format(chat_number))
+    chat.click()
+    chat_header = wait.until(EC.presence_of_element_located(
         (By.XPATH, "/html/body/div[1]/div[1]/div/div/div[2]/div/div[2]/a")))
-    dialog_header.click()
+    chat_header.click()
+
+    chat_name = driver.find_element_by_xpath(
+        "/html/body/div[5]/div[2]/div/div/div[1]/div[2]/div[2]/div[1]").text
+
+    path_chat_folder = "{}{}\\".format(
+        DOWNLOAD_FOLDER, chat_name)
+
+    if os.path.isdir(path_chat_folder):
+        path_chat_folder = path_chat_folder + "_{}".format(chat_number)
+
+    os.mkdir(path_chat_folder)
 
     img = ImageGrab.grab()
-    img.save(SCREEN_FOLDER + "profile{}.jpg".format(dialog_number))
+    img.save(path_chat_folder + "profile.jpg")
 
     driver.find_element_by_xpath(
         "/html/body/div[5]/div[2]/div/div/div[1]/div[1]/div[1]/a").click()
 
-    slider_dialog = driver.find_element_by_xpath(
+    slider_chat = driver.find_element_by_xpath(
         "/html/body/div[1]/div[2]/div/div[2]/div[3]/div/div[2]/div[2]/div")
-    slider_dialog_y = slider_dialog.location["y"]
+    slider_chat_y = slider_chat.location["y"]
 
-    hystory_dialog = driver.find_element_by_xpath(
+    hystory_chat = driver.find_element_by_xpath(
         "/html/body/div[1]/div[2]/div/div[2]/div[3]/div/div[2]/div[1]/div")
 
-    hystory_dialog_height = hystory_dialog.size["height"]
+    hystory_chat_height = hystory_chat.size["height"]
 
     # scount = 1
     while True:
@@ -136,32 +158,56 @@ while True:
         num_messages = len(driver.find_elements_by_css_selector(
             "div.im_history_messages_peer:not(.ng-hide) > div.im_history_message_wrap"))
 
-        if (hystory_dialog_height == hystory_dialog.size["height"]) or (MAX_MESSAGES <= num_messages):
+        if (hystory_chat_height == hystory_chat.size["height"]) or (MAX_MESSAGES <= num_messages):
             print("Старая высота {}   Новая высота {} Сообщений: {}".format(
-                hystory_dialog_height, hystory_dialog.size["height"], num_messages))
+                hystory_chat_height, hystory_chat.size["height"], num_messages))
             break
 
-        hystory_dialog_height = hystory_dialog.size["height"]
+        hystory_chat_height = hystory_chat.size["height"]
 
-    dialog_height = driver.find_element_by_xpath(
+    chat_height = driver.find_element_by_xpath(
         "/html/body/div[1]/div[2]/div/div[2]/div[3]/div/div[2]").size["height"]
 
     img = ImageGrab.grab()
-    img.save(SCREEN_FOLDER + "dialog{} 0.jpg".format(dialog_number))
-    count = 1
+    img.save(path_chat_folder +
+             "chat_0.jpg")
+    screen_number = 1
     while True:
-        scroll_height = dialog_height * count * 0.9
+        scroll_height = chat_height * screen_number * 0.9
         driver.execute_script(
             "document.getElementsByClassName(\"im_history_scrollable_wrap\")[0].scroll({}, {})".format(0, scroll_height))
 
         time.sleep(0.5)
         img = ImageGrab.grab()
-        img.save(SCREEN_FOLDER + "dialog{} {}.jpg".format(dialog_number, count))
+        img.save(path_chat_folder + "\\chat_{}.jpg".format(screen_number))
 
-        if scroll_height >= hystory_dialog.size["height"]:
+        if scroll_height >= hystory_chat.size["height"]:
             break
-        count = count + 1
+        screen_number = screen_number + 1
 
-    time.sleep(0.5)
+    audios = driver.find_elements_by_css_selector(
+        "div.im_history_messages_peer:not(.ng-hide) div.audio_player_actions > a:nth-child(1)")
+
+    for download_audio in audios:
+        download_audio.click()
+
+    documents = driver.find_elements_by_css_selector(
+        "div.im_history_messages_peer:not(.ng-hide) div.im_message_document_actions > a:nth-child(1)")
+
+    '''
+    for document in documents:
+        document.click()
+    '''
+
+    count_documents = len(audios)  # + len(documents)
+
+    while True:
+        if len(os.listdir("{}TmpDownload".format(DOWNLOAD_FOLDER))) == count_documents:
+            break
+        else:
+            time.sleep(0.5)
+    for document in os.listdir("{}TmpDownload".format(DOWNLOAD_FOLDER)):
+        os.rename("{}TmpDownload\\{}".format(DOWNLOAD_FOLDER, document),
+                  path_chat_folder + "\\{}".format(document))
 
 print("Выполнение программы успешно завершено!!!")

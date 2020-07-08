@@ -16,6 +16,7 @@
 
 Шапка диалога: /html/body/div[1]/div[1]/div/div/div[2]/div/div[2]/a
 Закрытие информации о пользователе: /html/body/div[5]/div[2]/div/div/div[1]/div[1]/div[1]/a
+Имя собседника: /html/body/div[5]/div[2]/div/div/div[1]/div[2]/div[2]/div[1]
 
 Слайдер диалога: /html/body/div[1]/div[2]/div/div[2]/div[3]/div/div[2]/div[2]/div
 Диалог со скролом: im_history_scrollable_wrap
@@ -30,3 +31,20 @@
 
 Диалог: /html/body/div[1]/div[2]/div/div[2]/div[3]/div/div[2]
 
+Сообщение из диалога: im_history_message_wrap
+  Тело сообщения: im_message_body
+    Сообщение с медиа: im_message_media
+      Изображение: im_message_photo_thumb
+      Аудио: im_message_audio
+        Все кнопки download в аудио сообщениях данного диалога: div.im_history_messages_peer:not(.ng-hide) div.audio_player_actions > a:nth-child(1)
+      Документ: im_message_document
+        Все кнопки download в документах данного диалога: div.im_history_messages_peer:not(.ng-hide) div.im_message_document_actions > a:nth-child(1)
+      Контакт: im_message_contact
+      Геопозиция: im_message_geopoint
+    Сообщение с текстом: im_message_text
+
+
+Сообщение
+  Аудио сообщение: audio_player_actions /html/body/div[1]/div[2]/div/div[2]/div[3]/div/div[2]/div[1]/div/div[1]/div[2]/div[2]/div[122]/div[2]/div/div/div[2]/div/div[2]/div/div/div/div/div/div/div[2] 
+    Загрузка аудио: /html/body/div[1]/div[2]/div/div[2]/div[3]/div/div[2]/div[1]/div/div[1]/div[2]/div[2]/div[122]/div[2]/div/div/div[2]/div/div[2]/div/div/div/div/div/div/div[2]/a[1]
+  
