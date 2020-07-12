@@ -1,5 +1,6 @@
 import os
 import time
+import uuid
 from selenium import webdriver
 from PIL import ImageGrab
 from selenium.webdriver.common.by import By
@@ -11,6 +12,8 @@ DOWNLOAD_FOLDER = "D:\\Programs\\TLScreen\\TLScreen\\Telegram\\"
 
 MAX_MESSAGES = 1000
 
+EXTENSIONS_DOCUMENT = [".docx", ".txt"]
+
 url = "https://web.telegram.org/#/im"
 fp = webdriver.FirefoxProfile(os.environ["MProfile"])
 fp.set_preference("browser.download.folderList", 2)
@@ -18,7 +21,8 @@ fp.set_preference("browser.download.manager.showWhenStarting", False)
 fp.set_preference("browser.download.dir",
                   "{}TmpDownload".format(DOWNLOAD_FOLDER))
 fp.set_preference("browser.helperApps.alwaysAsk.force", False)
-
+fp.set_preference('browser.helperApps.neverAsk.saveToDisk',
+                  "application/octet-stream")
 
 driver = webdriver.Firefox(fp)
 
@@ -120,11 +124,13 @@ while True:
     chat_name = driver.find_element_by_xpath(
         "/html/body/div[5]/div[2]/div/div/div[1]/div[2]/div[2]/div[1]").text
 
-    path_chat_folder = "{}{}\\".format(
+    path_chat_folder = "{}{}".format(
         DOWNLOAD_FOLDER, chat_name)
 
     if os.path.isdir(path_chat_folder):
-        path_chat_folder = path_chat_folder + "_{}".format(chat_number)
+        path_chat_folder = path_chat_folder + "_{}".format(uuid.uuid1())
+
+    path_chat_folder = path_chat_folder + "\\"
 
     os.mkdir(path_chat_folder)
 
@@ -192,14 +198,19 @@ while True:
         download_audio.click()
 
     documents = driver.find_elements_by_css_selector(
-        "div.im_history_messages_peer:not(.ng-hide) div.im_message_document_actions > a:nth-child(1)")
+        "div.im_history_messages_peer:not(.ng-hide) .im_message_document")
 
-    '''
+    download_documents = 0
     for document in documents:
-        document.click()
-    '''
+        extension_document = document.find_element_by_xpath(
+            ".").find_element_by_class_name("im_message_document_name").get_attribute("data-ext")
 
-    count_documents = len(audios)  # + len(documents)
+        if extension_document in EXTENSIONS_DOCUMENT:
+            document.find_element_by_css_selector(
+                "div.im_message_document_actions > a:nth-child(1)").click()
+            download_documents = download_documents + 1
+
+    count_documents = len(audios) + download_documents
 
     while True:
         if len(os.listdir("{}TmpDownload".format(DOWNLOAD_FOLDER))) == count_documents:

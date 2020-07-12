@@ -48,3 +48,9 @@
   Аудио сообщение: audio_player_actions /html/body/div[1]/div[2]/div/div[2]/div[3]/div/div[2]/div[1]/div/div[1]/div[2]/div[2]/div[122]/div[2]/div/div/div[2]/div/div[2]/div/div/div/div/div/div/div[2] 
     Загрузка аудио: /html/body/div[1]/div[2]/div/div[2]/div[3]/div/div[2]/div[1]/div/div[1]/div[2]/div[2]/div[122]/div[2]/div/div/div[2]/div/div[2]/div/div/div/div/div/div/div[2]/a[1]
   
+
+Документ в диалоге: div.im_history_messages_peer:not(.ng-hide) .im_message_document
+Размер документа: im_message_document_size
+Загрузка документа: im_message_document_actions
+Название документа: im_message_document_name
+/html/body/div[1]/div[2]/div/div[2]/div[3]/div/div[2]/div[1]/div/div[1]/div[2]/div[2]/div[34]/div/div/div/div[2]/div/div[2]/div/div/div/div/div/div[2]/a
