@@ -224,7 +224,9 @@ def screen_chats(driver, conf):
         badge_chat = driver.find_element_by_xpath(
             "/html/body/div[1]/div[2]/div/div[1]/div[2]/div/div[1]/ul/li[{}]/a/div[1]/span".format(chat_number))
 
-        if badge_chat.text != "":
+        if badge_chat.text != "" and not (conf.screen_unread_messages):
+            log.info(
+                f"Чат {chat_number} имеет непрочитанные сообщения и поэтому был пропущен")
             continue
 
         chat = driver.find_element_by_xpath(
