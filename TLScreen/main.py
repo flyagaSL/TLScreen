@@ -28,7 +28,7 @@ def create_firefox_profile(conf):
 
 
 def screen_object_profile(driver, conf):
-    chats = wait.until(EC.presence_of_element_located(
+    wait.until(EC.presence_of_element_located(
         (By.XPATH, "/html/body/div[1]/div[2]/div/div[1]/div[2]/div/div[1]/ul/li[1]")))
 
     button_menu = wait.until(EC.presence_of_element_located(
@@ -56,7 +56,7 @@ def screen_object_profile(driver, conf):
 
     button_active_sessions.click()
 
-    active_sessions = wait.until(EC.presence_of_element_located(
+    wait.until(EC.presence_of_element_located(
         (By.XPATH, "/html/body/div[6]/div[2]/div/div/div[2]/div/div/div[1]/ul")))
     log.info("Загружены активные сессии профиля")
 
@@ -109,8 +109,14 @@ def screen_chat(driver, conf):
         (By.XPATH, "/html/body/div[1]/div[1]/div/div/div[2]/div/div[2]/a")))
     chat_header.click()
 
+    chat_type = driver.find_element_by_xpath(
+        "/html/body/div[5]/div[2]/div/div/div[1]/div[1]/div[2]").text
+
     chat_name = driver.find_element_by_xpath(
         "/html/body/div[5]/div[2]/div/div/div[1]/div[2]/div[2]/div[1]").text
+
+    chat_status = driver.find_element_by_xpath(
+        "/html/body/div[5]/div[2]/div/div/div[1]/div[2]/div[2]/div[2]").text
 
     path_chat_folder = "{}{}".format(conf.download_folder, chat_name)
 
@@ -130,9 +136,25 @@ def screen_chat(driver, conf):
     driver.find_element_by_xpath(
         "/html/body/div[5]/div[2]/div/div/div[1]/div[1]/div[1]/a").click()
 
-    slider_chat = driver.find_element_by_xpath(
-        "/html/body/div[1]/div[2]/div/div[2]/div[3]/div/div[2]/div[2]/div")
-    slider_chat_y = slider_chat.location["y"]
+    if chat_status == "bot" and not conf.screen_bot:
+        log.info(
+            f"Чат с {chat_name} был пропущен из-за настройки в config: SCREEN_BOT: False")
+        return
+
+    if chat_type == "Group info" and not conf.screen_group:
+        log.info(
+            f"Чат с {chat_name} был пропущен из-за настройки в config: SCREEN_GROUP: False")
+        return
+
+    if chat_type == "Contact info" and not conf.screen_contact:
+        log.info(
+            f"Чат с {chat_name} был пропущен из-за настройки в config: SCREEN_CONTACT: False")
+        return
+
+    if chat_type == "Channel info" and not conf.screen_channel:
+        log.info(
+            f"Чат с {chat_name} был пропущен из-за настройки в config: SCREEN_CHANNEL: False")
+        return
 
     hystory_chat = driver.find_element_by_xpath(
         "/html/body/div[1]/div[2]/div/div[2]/div[3]/div/div[2]/div[1]/div")
@@ -145,7 +167,7 @@ def screen_chat(driver, conf):
             "document.getElementsByClassName(\"im_history_scrollable_wrap\")[0].scroll(0, 0)")
         time.sleep(0.5)
         try:
-            progress = WebDriverWait(driver, 40).until(EC.invisibility_of_element_located(
+            WebDriverWait(driver, 40).until(EC.invisibility_of_element_located(
                 (By.XPATH, "/html/body/div[1]/div[2]/div/div[2]/div[3]/div/div[2]/div[1]/div/div[1]/div[2]/div[1]")))
         except Exception as except_info:
             break
@@ -242,7 +264,7 @@ if __name__ == "__main__":
     conf.parse_config("config.txt")
     driver = webdriver.Firefox(create_firefox_profile(conf))
     log.info("Профиль firefox успешно настроен")
-    wait = WebDriverWait(driver, 20)
+    wait = WebDriverWait(driver, 50)
     driver.get(URL)
     screen_object_profile(driver, conf)
     screen_headers_chats(driver, conf)

@@ -15,9 +15,9 @@
   Непрочитанные сообщения:/html/body/div[1]/div[2]/div/div[1]/div[2]/div/div[1]/ul/li[5]/a/div[1]/span
 
 Шапка диалога: /html/body/div[1]/div[1]/div/div/div[2]/div/div[2]/a
-Закрытие информации о пользователе: /html/body/div[5]/div[2]/div/div/div[1]/div[1]/div[1]/a
-Имя собседника: /html/body/div[5]/div[2]/div/div/div[1]/div[2]/div[2]/div[1]
-
+Тип диалога: /html/body/div[5]/div[2]/div/div/div[1]/div[1]/div[2](Contact info, Channel info ...)
+Имя диалога: /html/body/div[5]/div[2]/div/div/div[1]/div[2]/div[2]/div[1] (Mash)
+Статус диалога: (858198 subscribers, bot)
 Слайдер диалога: /html/body/div[1]/div[2]/div/div[2]/div[3]/div/div[2]/div[2]/div
 Диалог со скролом: im_history_scrollable_wrap
 Весь прогрузившийся диалог: im_history_scrollable
@@ -54,3 +54,4 @@
 Загрузка документа: im_message_document_actions
 Название документа: im_message_document_name
 /html/body/div[1]/div[2]/div/div[2]/div[3]/div/div[2]/div[1]/div/div[1]/div[2]/div[2]/div[34]/div/div/div/div[2]/div/div[2]/div/div/div/div/div/div[2]/a
+
