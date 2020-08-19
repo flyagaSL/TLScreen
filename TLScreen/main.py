@@ -2,6 +2,7 @@ import os
 import time
 import uuid
 import sys
+import urllib.request
 from config import Config
 from logger import log
 from selenium import webdriver
@@ -15,12 +16,24 @@ from selenium.common.exceptions import NoSuchElementException
 URL = "https://web.telegram.org/#/im"
 
 
+def check_internet_connection():
+    try:
+        urllib.request.urlopen("http://google.com")
+    except IOError:
+        log.info("Ожидается интернет соединение")
+        time.sleep(1)
+        check_internet_connection()
+    else:
+        log.info("Интернет соединение установлено")
+        return
+
+
 def create_firefox_profile(conf):
     fp = webdriver.FirefoxProfile(conf.firefox_profile)
     fp.set_preference("browser.download.folderList", 2)
     fp.set_preference("browser.download.manager.showWhenStarting", False)
     fp.set_preference("browser.download.dir",
-                      "{}TmpDownload".format(conf.download_folder))
+                      f"{conf.download_folder}TmpDownload")
     fp.set_preference("browser.helperApps.alwaysAsk.force", False)
     fp.set_preference('browser.helperApps.neverAsk.saveToDisk',
                       "application/octet-stream")
@@ -259,12 +272,13 @@ def screen_chats(driver, conf):
 
 if __name__ == "__main__":
     log.info("Начало выполнения программы")
-    log.info("Анализ конфиг файла")
+    log.info("Разбор конфиг файла config.txt")
     conf = Config()
     conf.parse_config("config.txt")
     driver = webdriver.Firefox(create_firefox_profile(conf))
     log.info("Профиль firefox успешно настроен")
-    wait = WebDriverWait(driver, 50)
+    check_internet_connection()
+    wait = WebDriverWait(driver, 20)
     driver.get(URL)
     screen_object_profile(driver, conf)
     screen_headers_chats(driver, conf)
