@@ -11,7 +11,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
-
+from selenium.common.exceptions import TimeoutException
 
 URL = "https://web.telegram.org/#/im"
 
@@ -38,83 +38,6 @@ def create_firefox_profile(conf):
     fp.set_preference('browser.helperApps.neverAsk.saveToDisk',
                       "application/octet-stream")
     return fp
-
-
-def screen_object_profile(driver, conf):
-    wait.until(EC.presence_of_element_located(
-        (By.XPATH, "/html/body/div[1]/div[2]/div/div[1]/div[2]/div/div[1]/ul/li[1]")))
-
-    button_menu = wait.until(EC.presence_of_element_located(
-        (By.XPATH, "/html/body/div[1]/div[1]/div/div/div[1]/div/a/div")))
-
-    button_menu.click()
-    log.info("Переход в меню профиля")
-
-    button_settings = wait.until(EC.presence_of_element_located(
-        (By.XPATH, "/html/body/div[1]/div[1]/div/div/div[1]/div/ul/li[3]/a")))
-
-    button_settings.click()
-    log.info("Переход в настройки профиля")
-
-    button_active_sessions = wait.until(EC.presence_of_element_located(
-        (By.XPATH, "/html/body/div[5]/div[2]/div/div/div[3]/div/div[4]/div[3]/a")))
-
-    if not os.path.isdir(conf.download_folder):
-        os.mkdir(conf.download_folder)
-        log.info(f"Создана папка {conf.download_folder}")
-
-    img = ImageGrab.grab()
-    img.save(conf.download_folder + 'profile.jpg')
-    log.info("Сделан снимок профиля profile.jpg")
-
-    button_active_sessions.click()
-
-    wait.until(EC.presence_of_element_located(
-        (By.XPATH, "/html/body/div[6]/div[2]/div/div/div[2]/div/div/div[1]/ul")))
-    log.info("Загружены активные сессии профиля")
-
-    img = ImageGrab.grab()
-    img.save(conf.download_folder + 'active_sessions.jpg')
-    log.info("Сделан снимок активных сессий пользователя active_sessions.jpg")
-
-    driver.find_element_by_xpath(
-        "/html/body/div[6]/div[2]/div/div/div[1]/div[1]/div/a").click()
-    driver.find_element_by_xpath(
-        "/html/body/div[5]/div[2]/div/div/div[1]/div[1]/div[1]/a[1]").click()
-
-
-def screen_headers_chats(driver, conf):
-    slider = driver.find_element_by_xpath(
-        "/html/body/div[1]/div[2]/div/div[1]/div[2]/div/div[2]/div")
-
-    height_chats = driver.find_element_by_xpath(
-        "/html/body/div[1]/div[2]/div/div[1]/div[2]/div").size["height"]
-
-    slider_y_position = slider.location["y"]
-
-    img = ImageGrab.grab()
-    img.save(conf.download_folder + "chats_0.jpg")
-    log.info("Сделан 0-й снимок заголовков чатов chats_0.jpg")
-
-    count = 1
-
-    while True:
-        driver.execute_script(
-            "document.getElementsByClassName(\"im_dialogs_scrollable_wrap  nano-content\")[0].scroll({}, {})".format(0, height_chats * count * 0.9))  # 0.9 - 90% от высоты диалога
-
-        if slider_y_position == slider.location["y"]:
-            break
-
-        slider_y_position = slider.location["y"]
-        time.sleep(0.5)
-        img = ImageGrab.grab()
-        img.save(conf.download_folder + "chats_{}.jpg".format(count))
-        log.info(
-            f"Сделан {count}-й снимок заголовков чатов chats_{count}.jpg")
-        count = count + 1
-
-    driver.execute_script(
-        "document.getElementsByClassName(\"im_dialogs_scrollable_wrap  nano-content\")[0].scroll({}, {})".format(0, 0))
 
 
 def screen_chat(driver, conf):
@@ -268,6 +191,93 @@ def screen_chats(driver, conf):
             "/html/body/div[1]/div[2]/div/div[1]/div[2]/div/div[1]/ul/li[{}]".format(chat_number))
         chat.click()
         screen_chat(driver, conf)
+    log.info("Выполнение программы успешно завершено!!!")
+
+
+def screen_headers_chats(driver, conf):
+    slider = driver.find_element_by_xpath(
+        "/html/body/div[1]/div[2]/div/div[1]/div[2]/div/div[2]/div")
+
+    height_chats = driver.find_element_by_xpath(
+        "/html/body/div[1]/div[2]/div/div[1]/div[2]/div").size["height"]
+
+    slider_y_position = slider.location["y"]
+
+    img = ImageGrab.grab()
+    img.save(conf.download_folder + "chats_0.jpg")
+    log.info("Сделан 0-й снимок заголовков чатов chats_0.jpg")
+
+    count = 1
+
+    while True:
+        driver.execute_script(
+            "document.getElementsByClassName(\"im_dialogs_scrollable_wrap  nano-content\")[0].scroll({}, {})".format(0, height_chats * count * 0.9))  # 0.9 - 90% от высоты диалога
+
+        if slider_y_position == slider.location["y"]:
+            break
+
+        slider_y_position = slider.location["y"]
+        time.sleep(0.5)
+        img = ImageGrab.grab()
+        img.save(conf.download_folder + "chats_{}.jpg".format(count))
+        log.info(
+            f"Сделан {count}-й снимок заголовков чатов chats_{count}.jpg")
+        count = count + 1
+
+    driver.execute_script(
+        "document.getElementsByClassName(\"im_dialogs_scrollable_wrap  nano-content\")[0].scroll({}, {})".format(0, 0))
+
+    screen_chats(driver, conf)
+
+
+def screen_object_profile(driver, conf):
+    try:
+        wait.until(EC.presence_of_element_located(
+            (By.XPATH, "/html/body/div[1]/div[2]/div/div[1]/div[2]/div/div[1]/ul/li[1]")))
+    except TimeoutException:
+        if driver.current_url == 'https://web.telegram.org/#/login':
+            log.info("Вход в телеграм не выполонен")
+            return
+
+    button_menu = wait.until(EC.presence_of_element_located(
+        (By.XPATH, "/html/body/div[1]/div[1]/div/div/div[1]/div/a/div")))
+
+    button_menu.click()
+    log.info("Переход в меню профиля")
+
+    button_settings = wait.until(EC.presence_of_element_located(
+        (By.XPATH, "/html/body/div[1]/div[1]/div/div/div[1]/div/ul/li[3]/a")))
+
+    button_settings.click()
+    log.info("Переход в настройки профиля")
+
+    button_active_sessions = wait.until(EC.presence_of_element_located(
+        (By.XPATH, "/html/body/div[5]/div[2]/div/div/div[3]/div/div[4]/div[3]/a")))
+
+    if not os.path.isdir(conf.download_folder):
+        os.mkdir(conf.download_folder)
+        log.info(f"Создана папка {conf.download_folder}")
+
+    img = ImageGrab.grab()
+    img.save(conf.download_folder + 'profile.jpg')
+    log.info("Сделан снимок профиля profile.jpg")
+
+    button_active_sessions.click()
+
+    wait.until(EC.presence_of_element_located(
+        (By.XPATH, "/html/body/div[6]/div[2]/div/div/div[2]/div/div/div[1]/ul")))
+    log.info("Загружены активные сессии профиля")
+
+    img = ImageGrab.grab()
+    img.save(conf.download_folder + 'active_sessions.jpg')
+    log.info("Сделан снимок активных сессий пользователя active_sessions.jpg")
+
+    driver.find_element_by_xpath(
+        "/html/body/div[6]/div[2]/div/div/div[1]/div[1]/div/a").click()
+    driver.find_element_by_xpath(
+        "/html/body/div[5]/div[2]/div/div/div[1]/div[1]/div[1]/a[1]").click()
+
+    screen_headers_chats(driver, conf)
 
 
 if __name__ == "__main__":
@@ -278,9 +288,6 @@ if __name__ == "__main__":
     driver = webdriver.Firefox(create_firefox_profile(conf))
     log.info("Профиль firefox успешно настроен")
     check_internet_connection()
-    wait = WebDriverWait(driver, 20)
+    wait = WebDriverWait(driver, 40)
     driver.get(URL)
     screen_object_profile(driver, conf)
-    screen_headers_chats(driver, conf)
-    screen_chats(driver, conf)
-    log.info("Выполнение программы успешно завершено!!!")
