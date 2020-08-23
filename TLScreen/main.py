@@ -1,3 +1,4 @@
+from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 import os
 import time
 import uuid
@@ -10,8 +11,7 @@ from PIL import ImageGrab
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import NoSuchElementException
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException, TimeoutException
 
 URL = "https://web.telegram.org/#/im"
 
@@ -36,7 +36,7 @@ def create_firefox_profile(conf):
                       f"{conf.download_folder}TmpDownload")
     fp.set_preference("browser.helperApps.alwaysAsk.force", False)
     fp.set_preference('browser.helperApps.neverAsk.saveToDisk',
-                      "application/octet-stream")
+                      "application/octet-stream;audio/ogg;audio/mpeg")
     return fp
 
 
@@ -141,8 +141,13 @@ def screen_chat(driver, conf):
     audios = driver.find_elements_by_css_selector(
         "div.im_history_messages_peer:not(.ng-hide) div.audio_player_actions > a:nth-child(1)")
 
+    download_audios = 0
     for download_audio in audios:
-        download_audio.click()
+        try:
+            download_audio.click()
+            download_audios = download_audios + 1
+        except StaleElementReferenceException:
+            log.info("Ошибка загрузки аудио сообщения")
 
     documents = driver.find_elements_by_css_selector(
         "div.im_history_messages_peer:not(.ng-hide) .im_message_document")
@@ -153,14 +158,17 @@ def screen_chat(driver, conf):
             "im_message_document_name").get_attribute("data-ext")
 
         if extension_document in conf.extensions_document:
-            document.find_element_by_css_selector(
-                "div.im_message_document_actions > a:nth-child(1)").click()
-            download_documents = download_documents + 1
+            try:
+                document.find_element_by_css_selector(
+                    "div.im_message_document_actions > a:nth-child(1)").click()
+                download_documents = download_documents + 1
+            except StaleElementReferenceException:
+                log.info("Ошибка загрузки документа")
 
-    count_documents = len(audios) + download_documents
+    count_documents = download_audios + download_documents
     while True:
         if len(os.listdir("{}TmpDownload".format(conf.download_folder))) == count_documents:
-            log.info(f"Загружено {count_documents} документов")
+            log.info(f"Загружено {count_documents} вложений")
             break
         else:
             time.sleep(0.5)
@@ -285,6 +293,8 @@ if __name__ == "__main__":
     log.info("Разбор конфиг файла config.txt")
     conf = Config()
     conf.parse_config("config.txt")
+    #binary = FirefoxBinary('FirefoxPortable\\FirefoxPortable.exe')
+    #exec_path = "geckodriver-v0.26.0-win64\\geckodriver.exe"
     driver = webdriver.Firefox(create_firefox_profile(conf))
     log.info("Профиль firefox успешно настроен")
     check_internet_connection()

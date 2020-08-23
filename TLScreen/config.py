@@ -16,7 +16,7 @@ class Config:
 
     def parse_config(self, name_config_file):
         try:
-            with open(name_config_file, "r") as file:
+            with open(name_config_file, "r", encoding='utf-8') as file:
                 for line in file:
                     line = line.strip()
                     index_comment = line.find('#')

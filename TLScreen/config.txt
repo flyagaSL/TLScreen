@@ -4,10 +4,10 @@ MAX_MESSAGES: 1000 # Максимальное количество загруж�
 
 EXTENSIONS_DOCUMENT: .docx .txt # Расширения файлов для загрузки
 
-#FIREFOX_PROFILE:     D:\... # Профиль в браузере Firefox, под которым будет выполняться скрипт
+FIREFOX_PROFILE: C:\Users\Сергей\AppData\Roaming\Mozilla\Firefox\Profiles\b62vfpq6.telega3 # Профиль в браузере Firefox, под которым будет выполняться скрипт
 
 
-DOWNLOAD_FOLDER: D:\\Programs\\TLScreen\\TLScreen\\Telegram\\ # Папка для загрузки
+DOWNLOAD_FOLDER: D:\Programs\TLScreen\TLScreen\Telegram\ # Папка для загрузки
 
 
 SCREEN_UNREAD_MESSAGES: False  sds # Читать непрочитанные сообщения
