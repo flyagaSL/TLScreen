@@ -293,8 +293,6 @@ if __name__ == "__main__":
     log.info("Разбор конфиг файла config.txt")
     conf = Config()
     conf.parse_config("config.txt")
-    #binary = FirefoxBinary('FirefoxPortable\\FirefoxPortable.exe')
-    #exec_path = "geckodriver-v0.26.0-win64\\geckodriver.exe"
     driver = webdriver.Firefox(create_firefox_profile(conf))
     log.info("Профиль firefox успешно настроен")
     check_internet_connection()
