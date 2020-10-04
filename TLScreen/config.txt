@@ -1,16 +1,16 @@
 # Параметры работы программы
 
+GECKODRIVER: D:\MyPrograms\GIT Projects\TLScreen\TLScreen\geckodriver-v0.26.0-win64\geckodriver.exe # путь до драйвера geckodriver
+
+FIREFOX_PROFILE: C:\Users\Сергей\AppData\Roaming\Mozilla\Firefox\Profiles\b62vfpq6.telega3 # Профиль в браузере Firefox, под которым будет выполняться скрипт
+
+DOWNLOAD_FOLDER: D:\MyPrograms\GIT Projects\TLScreen\TLScreen\Telegram\ # Папка для загрузки
+
 MAX_MESSAGES: 1000 # Максимальное количество загружаемых сообщений в диалоге (больше тысячи ставить не рекомендуется)
 
 EXTENSIONS_DOCUMENT: .docx .txt # Расширения файлов для загрузки
 
-FIREFOX_PROFILE: C:\Users\Сергей\AppData\Roaming\Mozilla\Firefox\Profiles\b62vfpq6.telega3 # Профиль в браузере Firefox, под которым будет выполняться скрипт
-
-
-DOWNLOAD_FOLDER: D:\Programs\TLScreen\TLScreen\Telegram\ # Папка для загрузки
-
-
-SCREEN_UNREAD_MESSAGES: False  sds # Читать непрочитанные сообщения
+SCREEN_UNREAD_MESSAGES: False  # Читать непрочитанные сообщения
 
 SCREEN_GROUP: False # Сохранять переписку в группах
 
@@ -18,4 +18,4 @@ SCREEN_CONTACT: True # Сохранять переписку в диалогах
 
 SCREEN_CHANNEL: False # Сохранять переписку в каналах
 
-SCREEN_BOT: False True # Сохранять переписку с ботами
+SCREEN_BOT: False # Сохранять переписку с ботами

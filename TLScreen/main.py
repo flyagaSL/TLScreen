@@ -69,7 +69,6 @@ def screen_chats(driver, conf):
     chat_number = 0
 
     def screen_chat():
-        print(driver.current_url)
         chat_header = wait.until(EC.presence_of_element_located(
             (By.XPATH, "/html/body/div[1]/div[1]/div/div/div[2]/div/div[2]/a")))
         chat_header.click()
@@ -252,7 +251,10 @@ def screen_headers_chats(driver, conf):
             break
 
         slider_y_position = slider.location["y"]
-        time.sleep(0.5)
+
+        # 0.7 секунд ждать для прогрузки диалогов. Число подобрано экспериментальным путём.
+        time.sleep(0.7)
+
         img = ImageGrab.grab()
         img.save(conf.download_folder + "chats_{}.jpg".format(count))
         log.info(
@@ -312,12 +314,15 @@ def screen_object_profile(driver, conf):
 
 
 if __name__ == "__main__":
+    start_time = time.time()
     log.info("Начало выполнения программы")
     log.info("Разбор конфиг файла config.txt")
     conf = Config()
     conf.parse_config("config.txt")
-    driver = webdriver.Firefox(create_firefox_profile(conf))
+    driver = webdriver.Firefox(
+        executable_path=conf.geckodriver,  firefox_profile=create_firefox_profile(conf))
     log.info("Профиль firefox успешно настроен")
+    conf.print_parametrs()
     check_internet_connection()
     wait = WebDriverWait(driver, 40)
     driver.get(URL)
@@ -333,4 +338,5 @@ if __name__ == "__main__":
         sys.exit()
     else:
         log.info("Снимки чатов выполнены")
-    log.info("Выполнение программы успешно завершено!!!")
+    log.info(
+        f"Выполнение программы успешно завершено!!! Время выполнения: {time.time() - start_time} с.")

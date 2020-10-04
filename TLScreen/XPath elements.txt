@@ -1,3 +1,5 @@
+Файл для разработчиков. Описывает расположение веб элементов на странице. 
+
 Диалоги: /html/body/div[1]/div[2]/div/div[1]/div[2]/div/div[1]/ul/li[1]
 Кнопка меню: /html/body/div[1]/div[1]/div/div/div[1]/div/a/div
 Кнопка Settings в меню: /html/body/div[1]/div[1]/div/div/div[1]/div/ul/li[3]/a
