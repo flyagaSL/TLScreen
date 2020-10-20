@@ -51,9 +51,9 @@
 
    `python main.exe`
 
-## Пример работы с программой ##
+## Демонстрация работы программы ##
 
-![video](documents/gi.gif)
+![video](documents/demonstration.gif)
 
 
 
