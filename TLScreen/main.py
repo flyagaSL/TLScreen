@@ -65,7 +65,7 @@ def screen_chats(driver, conf):
     if not os.path.isdir(os.path.join(conf.download_folder, "TmpDownload")):
         os.mkdir(os.path.join(conf.download_folder,"TmpDownload"))
         log.info(f"Папка {os.path.join(conf.download_folder, 'TmpDownload')} создана")
-    chat_number = 0
+    
 
     def screen_chat():
         chat_header = wait.until(EC.presence_of_element_located(
@@ -202,7 +202,10 @@ def screen_chats(driver, conf):
             os.rename(os.path.join(conf.download_folder, "TmpDownload", file), os.path.join(path_chat_folder, file))
         log.info(f"Загруженные файлы перемещены в {path_chat_folder}")
 
-    while True:
+    dialogs = driver.find_elements_by_class_name('im_dialog_wrap')
+
+    chat_number = 0
+    while chat_number < len(dialogs):
         chat_number = chat_number + 1
 
         badge_chat = driver.find_element_by_xpath(
