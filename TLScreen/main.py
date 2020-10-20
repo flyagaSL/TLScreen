@@ -326,16 +326,20 @@ if __name__ == "__main__":
     wait = WebDriverWait(driver, 40)
     driver.get(URL)
     if screen_object_profile(driver, conf):
+        driver.close()
         sys.exit()
     else:
         log.info("Снимки профиля выполнены")
     if screen_headers_chats(driver, conf):
+        driver.close()
         sys.exit()
     else:
         log.info("Снимки заголовков чатов выполнены")
     if screen_chats(driver, conf):
+        driver.close()
         sys.exit()
     else:
+        driver.close()
         log.info("Снимки чатов выполнены")
-    log.info(
-        f"Выполнение программы успешно завершено!!! Время выполнения: {time.time() - start_time} с.")
+        log.info(
+            f"Выполнение программы успешно завершено!!! Время выполнения: {time.time() - start_time} с.")
