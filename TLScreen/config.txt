@@ -1,10 +1,14 @@
 # Параметры работы программы
 
-GECKODRIVER: D:\MyPrograms\GIT Projects\TLScreen\TLScreen\geckodriver-v0.26.0-win64\geckodriver.exe # путь до драйвера geckodriver
+# D:\MyPrograms\GIT Projects\TLScreen\TLScreen\geckodriver-v0.26.0-win64\geckodriver.exe
+# C:\Users\Админ\AppData\Roaming\Mozilla\Firefox\Profiles\b62vfpq6.telega3
+# D:\MyPrograms\GIT Projects\TLScreen\TLScreen\Telegram
 
-FIREFOX_PROFILE: C:\Users\Сергей\AppData\Roaming\Mozilla\Firefox\Profiles\b62vfpq6.telega3 # Профиль в браузере Firefox, под которым будет выполняться скрипт
+GECKODRIVER: /home/sergei/GITProjects/TLScreen/TLScreen/geckodriver # путь до драйвера geckodriver
 
-DOWNLOAD_FOLDER: D:\MyPrograms\GIT Projects\TLScreen\TLScreen\Telegram\ # Папка для загрузки
+FIREFOX_PROFILE: /home/sergei/.mozilla/firefox/uo25bzma.telega # Профиль в браузере Firefox, под которым будет выполняться скрипт
+
+DOWNLOAD_FOLDER: /home/sergei/GITProjects/TLScreen/TLScreen/Telegram # Папка для загрузки
 
 MAX_MESSAGES: 1000 # Максимальное количество загружаемых сообщений в диалоге (больше тысячи ставить не рекомендуется)
 

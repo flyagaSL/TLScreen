@@ -38,8 +38,7 @@ def create_firefox_profile(conf):
     fp = webdriver.FirefoxProfile(conf.firefox_profile)
     fp.set_preference("browser.download.folderList", 2)
     fp.set_preference("browser.download.manager.showWhenStarting", False)
-    fp.set_preference("browser.download.dir",
-                      f"{conf.download_folder}TmpDownload")
+    fp.set_preference("browser.download.dir", os.path.join(conf.download_folder, "TmpDownload"))
     fp.set_preference("browser.helperApps.alwaysAsk.force", False)
     fp.set_preference('browser.helperApps.neverAsk.saveToDisk',
                       "application/octet-stream;audio/ogg;audio/mpeg")
@@ -68,10 +67,10 @@ def check_login():
 def screen_chats(driver, conf):
     if check_login():
         return check_login
-    if not os.path.isdir("{}TmpDownload".format(conf.download_folder)):
-        os.mkdir("{}TmpDownload".format(conf.download_folder))
-        log.info(f"папка {conf.download_folder}TmpDownload создана")
-    chat_number = 0
+    if not os.path.isdir(os.path.join(conf.download_folder, "TmpDownload")):
+        os.mkdir(os.path.join(conf.download_folder,"TmpDownload"))
+        log.info(f"Папка {os.path.join(conf.download_folder, 'TmpDownload')} создана")
+    
 
     def screen_chat():
         chat_header = wait.until(EC.presence_of_element_located(
@@ -87,20 +86,18 @@ def screen_chats(driver, conf):
         chat_status = driver.find_element_by_xpath(
             "/html/body/div[5]/div[2]/div/div/div[1]/div[2]/div[2]/div[2]").text
 
-        path_chat_folder = "{}{}".format(conf.download_folder, chat_name)
+        path_chat_folder = os.path.join(conf.download_folder, chat_name)
 
         if os.path.isdir(path_chat_folder):
-            path_chat_folder = path_chat_folder + "_{}".format(uuid.uuid4())
-
-        path_chat_folder = path_chat_folder + "\\"
+            path_chat_folder = path_chat_folder + f"_{uuid.uuid4()}"
 
         os.mkdir(path_chat_folder)
-        log.info("Создана папка path_chat_folder")
+        log.info(f"Создана папка {path_chat_folder}")
 
         img = ImageGrab.grab()
-        img.save(path_chat_folder + "profile.jpg")
+        img.save(os.path.join(path_chat_folder, "profile.jpg"))
         log.info(
-            f"Сделан снимок профиля собеседника {path_chat_folder}profile.jpg")
+            f"Сделан снимок профиля собеседника {os.path.join(path_chat_folder, 'profile.jpg')}")
 
         driver.find_element_by_xpath(
             "/html/body/div[5]/div[2]/div/div/div[1]/div[1]/div[1]/a").click()
@@ -153,8 +150,8 @@ def screen_chats(driver, conf):
             "/html/body/div[1]/div[2]/div/div[2]/div[3]/div/div[2]").size["height"]
 
         img = ImageGrab.grab()
-        img.save(path_chat_folder + "chat_0.jpg")
-        log.info(f"Сделан 0-й снимок диалога {path_chat_folder}chat_0.jpg")
+        img.save(os.path.join(path_chat_folder,"chat_0.jpg"))
+        log.info(f"Сделан 0-й снимок диалога {os.path.join(path_chat_folder,'chat_0.jpg')}")
 
         screen_number = 1
         while True:
@@ -163,8 +160,8 @@ def screen_chats(driver, conf):
                 "document.getElementsByClassName(\"im_history_scrollable_wrap\")[0].scroll({}, {})".format(0, scroll_height))
             time.sleep(0.5)
             img = ImageGrab.grab()
-            img.save(path_chat_folder + "\\chat_{}.jpg".format(screen_number))
-            log.info(f"{path_chat_folder}\chat_{screen_number}.jpg")
+            img.save(os.path.join(path_chat_folder, f"chat_{screen_number}.jpg"))
+            log.info(f"Сделан {screen_number}-й снимок диалога {os.path.join(path_chat_folder, f'chat_{screen_number}.jpg')}")
 
             if scroll_height >= hystory_chat.size["height"]:
                 break
@@ -200,18 +197,20 @@ def screen_chats(driver, conf):
 
         count_documents = download_audios + download_documents
         while True:
-            if len(os.listdir("{}TmpDownload".format(conf.download_folder))) == count_documents:
+            if len(os.listdir(os.path.join(conf.download_folder, "TmpDownload"))) == count_documents:
                 log.info(f"Загружено {count_documents} вложений")
                 break
             else:
                 time.sleep(0.5)
 
-        for file in os.listdir("{}TmpDownload".format(conf.download_folder)):
-            os.rename("{}TmpDownload\\{}".format(conf.download_folder, file),
-                      path_chat_folder + "\\{}".format(file))
+        for file in os.listdir(os.path.join(conf.download_folder, "TmpDownload")):
+            os.rename(os.path.join(conf.download_folder, "TmpDownload", file), os.path.join(path_chat_folder, file))
         log.info(f"Загруженные файлы перемещены в {path_chat_folder}")
 
-    while True:
+    dialogs = driver.find_elements_by_class_name('im_dialog_wrap')
+
+    chat_number = 0
+    while chat_number < len(dialogs):
         chat_number = chat_number + 1
 
         badge_chat = driver.find_element_by_xpath(
@@ -243,7 +242,7 @@ def screen_headers_chats(driver, conf):
     slider_y_position = slider.location["y"]
 
     img = ImageGrab.grab()
-    img.save(conf.download_folder + "chats_0.jpg")
+    img.save(os.path.join(conf.download_folder,"chats_0.jpg"))
     log.info("Сделан 0-й снимок заголовков чатов chats_0.jpg")
 
     count = 1
@@ -261,7 +260,7 @@ def screen_headers_chats(driver, conf):
         time.sleep(0.7)
 
         img = ImageGrab.grab()
-        img.save(conf.download_folder + "chats_{}.jpg".format(count))
+        img.save(os.path.join(conf.download_folder, f"chats_{count}.jpg"))
         log.info(
             f"Сделан {count}-й снимок заголовков чатов chats_{count}.jpg")
         count = count + 1
@@ -298,7 +297,7 @@ def screen_object_profile(driver, conf):
         log.info(f"Создана папка {conf.download_folder}")
 
     img = ImageGrab.grab()
-    img.save(conf.download_folder + 'profile.jpg')
+    img.save(os.path.join(conf.download_folder, 'profile.jpg'))
     log.info("Сделан снимок профиля profile.jpg")
 
     button_active_sessions.click()
@@ -308,7 +307,7 @@ def screen_object_profile(driver, conf):
     log.info("Загружены активные сессии профиля")
 
     img = ImageGrab.grab()
-    img.save(conf.download_folder + 'active_sessions.jpg')
+    img.save(os.path.join(conf.download_folder,'active_sessions.jpg'))
     log.info("Сделан снимок активных сессий пользователя active_sessions.jpg")
 
     driver.find_element_by_xpath(
@@ -332,16 +331,20 @@ if __name__ == "__main__":
     wait = WebDriverWait(driver, 40)
     driver.get(URL)
     if screen_object_profile(driver, conf):
+        driver.close()
         sys.exit()
     else:
         log.info("Снимки профиля выполнены")
     if screen_headers_chats(driver, conf):
+        driver.close()
         sys.exit()
     else:
         log.info("Снимки заголовков чатов выполнены")
     if screen_chats(driver, conf):
+        driver.close()
         sys.exit()
     else:
+        driver.close()
         log.info("Снимки чатов выполнены")
-    log.info(
-        f"Выполнение программы успешно завершено!!! Время выполнения: {time.time() - start_time} с.")
+        log.info(
+            f"Выполнение программы успешно завершено!!! Время выполнения: {time.time() - start_time} с.")
