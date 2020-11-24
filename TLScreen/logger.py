@@ -1,3 +1,7 @@
+'''
+:copyright: (c) 2020 by lavrovsergei97
+:license: Apache2, see LICENSE for more details.
+'''
 import logging
 import sys
 
