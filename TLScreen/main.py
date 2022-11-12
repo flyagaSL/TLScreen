@@ -9,6 +9,7 @@ import time
 import uuid
 import sys
 import urllib.request
+import re
 from config import Config
 from logger import log
 from selenium import webdriver
@@ -18,7 +19,13 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException, TimeoutException
 
-URL = "https://web.telegram.org/#/im"
+URL = "https://web.telegram.org/?legacy=1#/im"
+
+
+def slugify(value):
+    value = str(value)
+    value = re.sub(r'[^\w\s-]', '', value)
+    return re.sub(r'[-\s]+', '-', value).strip('-_')
 
 
 # Проверка интернет соединения. Функция будет бесконечно ожидать подключения к интернету
@@ -38,7 +45,8 @@ def create_firefox_profile(conf):
     fp = webdriver.FirefoxProfile(conf.firefox_profile)
     fp.set_preference("browser.download.folderList", 2)
     fp.set_preference("browser.download.manager.showWhenStarting", False)
-    fp.set_preference("browser.download.dir", os.path.join(conf.download_folder, "TmpDownload"))
+    fp.set_preference("browser.download.dir", os.path.join(
+        conf.download_folder, "TmpDownload"))
     fp.set_preference("browser.helperApps.alwaysAsk.force", False)
     fp.set_preference('browser.helperApps.neverAsk.saveToDisk',
                       "application/octet-stream;audio/ogg;audio/mpeg")
@@ -68,9 +76,9 @@ def screen_chats(driver, conf):
     if check_login():
         return check_login
     if not os.path.isdir(os.path.join(conf.download_folder, "TmpDownload")):
-        os.mkdir(os.path.join(conf.download_folder,"TmpDownload"))
-        log.info(f"Папка {os.path.join(conf.download_folder, 'TmpDownload')} создана")
-    
+        os.mkdir(os.path.join(conf.download_folder, "TmpDownload"))
+        log.info(
+            f"Папка {os.path.join(conf.download_folder, 'TmpDownload')} создана")
 
     def screen_chat():
         chat_header = wait.until(EC.presence_of_element_located(
@@ -86,12 +94,20 @@ def screen_chats(driver, conf):
         chat_status = driver.find_element_by_xpath(
             "/html/body/div[5]/div[2]/div/div/div[1]/div[2]/div[2]/div[2]").text
 
+        chat_name = slugify(chat_name)
+
         path_chat_folder = os.path.join(conf.download_folder, chat_name)
 
+        #path_chat_folder = slugify(path_chat_folder)
         if os.path.isdir(path_chat_folder):
             path_chat_folder = path_chat_folder + f"_{uuid.uuid4()}"
 
-        os.mkdir(path_chat_folder)
+        try:
+            os.mkdir(path_chat_folder)
+        except Exception:
+            path_chat_folder = f"_{uuid.uuid4()}"
+            os.mkdir(path_chat_folder)
+
         log.info(f"Создана папка {path_chat_folder}")
 
         img = ImageGrab.grab()
@@ -150,8 +166,9 @@ def screen_chats(driver, conf):
             "/html/body/div[1]/div[2]/div/div[2]/div[3]/div/div[2]").size["height"]
 
         img = ImageGrab.grab()
-        img.save(os.path.join(path_chat_folder,"chat_0.jpg"))
-        log.info(f"Сделан 0-й снимок диалога {os.path.join(path_chat_folder,'chat_0.jpg')}")
+        img.save(os.path.join(path_chat_folder, "chat_0.jpg"))
+        log.info(
+            f"Сделан 0-й снимок диалога {os.path.join(path_chat_folder,'chat_0.jpg')}")
 
         screen_number = 1
         while True:
@@ -160,8 +177,10 @@ def screen_chats(driver, conf):
                 "document.getElementsByClassName(\"im_history_scrollable_wrap\")[0].scroll({}, {})".format(0, scroll_height))
             time.sleep(0.5)
             img = ImageGrab.grab()
-            img.save(os.path.join(path_chat_folder, f"chat_{screen_number}.jpg"))
-            log.info(f"Сделан {screen_number}-й снимок диалога {os.path.join(path_chat_folder, f'chat_{screen_number}.jpg')}")
+            img.save(os.path.join(path_chat_folder,
+                                  f"chat_{screen_number}.jpg"))
+            log.info(
+                f"Сделан {screen_number}-й снимок диалога {os.path.join(path_chat_folder, f'chat_{screen_number}.jpg')}")
 
             if scroll_height >= hystory_chat.size["height"]:
                 break
@@ -204,7 +223,8 @@ def screen_chats(driver, conf):
                 time.sleep(0.5)
 
         for file in os.listdir(os.path.join(conf.download_folder, "TmpDownload")):
-            os.rename(os.path.join(conf.download_folder, "TmpDownload", file), os.path.join(path_chat_folder, file))
+            os.rename(os.path.join(conf.download_folder, "TmpDownload",
+                                   file), os.path.join(path_chat_folder, file))
         log.info(f"Загруженные файлы перемещены в {path_chat_folder}")
 
     dialogs = driver.find_elements_by_class_name('im_dialog_wrap')
@@ -242,7 +262,7 @@ def screen_headers_chats(driver, conf):
     slider_y_position = slider.location["y"]
 
     img = ImageGrab.grab()
-    img.save(os.path.join(conf.download_folder,"chats_0.jpg"))
+    img.save(os.path.join(conf.download_folder, "chats_0.jpg"))
     log.info("Сделан 0-й снимок заголовков чатов chats_0.jpg")
 
     count = 1
@@ -307,7 +327,7 @@ def screen_object_profile(driver, conf):
     log.info("Загружены активные сессии профиля")
 
     img = ImageGrab.grab()
-    img.save(os.path.join(conf.download_folder,'active_sessions.jpg'))
+    img.save(os.path.join(conf.download_folder, 'active_sessions.jpg'))
     log.info("Сделан снимок активных сессий пользователя active_sessions.jpg")
 
     driver.find_element_by_xpath(
